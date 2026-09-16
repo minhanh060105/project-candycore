@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 Candycore Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #ff6eb4;
+  --pink-light: #ffb3d9;
+  --pink-pale: #fff0f7;
+  --purple: #c77dff;
+  --purple-light: #e8c6ff;
+  --mint: #72efdd;
+  --yellow: #ffe66d;
+  --cream: #fff9f0;
+  --dark: #2d1b3d;
+  --text: #4a2060;
+  --text-light: #8b5a9e;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(199,125,255,0.2);
+  --shadow-hover: 0 8px 30px rgba(255,110,180,0.35);
+  --radius: 20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── BACKGROUND DECO ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255,110,180,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(199,125,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(114,239,221,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 2px solid var(--pink-light);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  box-shadow: 0 2px 20px rgba(255,110,180,0.1);
+}
+
+.nav-logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.5rem;
+  color: var(--pink);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+
+.nav-links { display: flex; gap: 0.5rem; align-items: center; }
+
+.nav-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 700;
+  color: var(--text-light); padding: 0.5rem 1rem; border-radius: 50px;
+  transition: all 0.2s;
+}
+.nav-btn:hover, .nav-btn.active { background: var(--pink-pale); color: var(--pink); }
+
+.nav-btn.cart-btn {
+  background: var(--pink); color: white; position: relative;
+}
+.nav-btn.cart-btn:hover { background: var(--purple); }
+
+.cart-count {
+  position: absolute; top: -4px; right: -4px;
+  background: var(--yellow); color: var(--dark);
+  border-radius: 50%; width: 20px; height: 20px;
+  font-size: 0.7rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.nav-user { display: flex; align-items: center; gap: 0.5rem; }
+.nav-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 0.85rem;
+}
+
+/* ── PAGES ── */
+.page { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+.page.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  text-align: center; padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--pink-pale) 0%, rgba(232,198,255,0.3) 100%);
+  border-radius: var(--radius); margin-bottom: 2rem;
+  border: 2px solid var(--pink-light);
+}
+.hero h1 {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--pink);
+  line-height: 1.1; margin-bottom: 0.5rem;
+}
+.hero p { color: var(--text-light); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+/* ── FILTERS ── */
+.filters {
+  display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  align-items: center;
+}
+.filter-btn {
+  padding: 0.5rem 1.2rem; border-radius: 50px;
+  border: 2px solid var(--pink-light); background: white;
+  color: var(--text-light); font-family: 'Nunito', sans-serif;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--pink); border-color: var(--pink); color: white;
+}
+
+.search-box {
+  flex: 1; min-width: 200px; max-width: 300px;
+  padding: 0.5rem 1.2rem; border-radius: 50px;
+  border: 2px solid var(--pink-light); font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem; outline: none; transition: border 0.2s;
+  background: white;
+}
+.search-box:focus { border-color: var(--pink); }
+
+/* ── PRODUCTS GRID ── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.product-card {
+  background: white; border-radius: var(--radius);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow);
+  overflow: hidden; cursor: pointer;
+  transition: all 0.25s; position: relative;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--pink-light);
+}
+
+.product-img {
+  width: 100%; aspect-ratio: 1;
+  background: var(--pink-pale);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; overflow: hidden; position: relative;
+}
+.product-img img { width: 100%; height: 100%; object-fit: cover; }
+.product-img .emoji-fallback { font-size: 4rem; }
+
+.sale-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--pink); color: white;
+  padding: 0.2rem 0.6rem; border-radius: 50px;
+  font-size: 0.75rem; font-weight: 800;
+}
+
+.product-info { padding: 1rem; }
+.product-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--text); }
+.product-character { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.5rem; }
+.product-price { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.8rem; }
+.price-current { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--pink); }
+.price-original { font-size: 0.85rem; color: #bbb; text-decoration: line-through; }
+.stock-info { font-size: 0.78rem; color: var(--text-light); }
+
+.add-cart-btn {
+  width: 100%; padding: 0.6rem;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white; border: none; border-radius: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.9rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.add-cart-btn:hover { opacity: 0.9; transform: scale(1.02); }
+.add-cart-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ── AUTH PAGES ── */
+.auth-wrapper {
+  max-width: 420px; margin: 2rem auto;
+  background: white; border-radius: var(--radius);
+  padding: 2.5rem; box-shadow: var(--shadow);
+  border: 2px solid var(--pink-light);
+}
+.auth-wrapper h2 {
+  font-family: 'Fredoka One', cursive;
+  color: var(--pink); font-size: 2rem; text-align: center; margin-bottom: 0.3rem;
+}
+.auth-subtitle { text-align: center; color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.8rem; }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--text); margin-bottom: 0.4rem; }
+.form-input {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 2px solid var(--pink-light); border-radius: 12px;
+  font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+  outline: none; transition: border 0.2s; background: var(--cream);
+  color: var(--text);
+}
+.form-input:focus { border-color: var(--pink); background: white; }
+
+.btn-primary {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white; border: none; border-radius: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem;
+  cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255,110,180,0.4); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.auth-switch { text-align: center; margin-top: 1.2rem; font-size: 0.9rem; color: var(--text-light); }
+.auth-switch a { color: var(--pink); font-weight: 700; cursor: pointer; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+
+.alert {
+  padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem;
+  font-size: 0.9rem; font-weight: 600; display: none;
+}
+.alert.error { background: #ffe0e0; color: #c0392b; border: 1px solid #ffb3b3; display: block; }
+.alert.success { background: #e0ffe8; color: #27ae60; border: 1px solid #b3ffc8; display: block; }
+
+/* ── CART PAGE ── */
+.cart-empty {
+  text-align: center; padding: 4rem 2rem;
+  color: var(--text-light);
+}
+.cart-empty .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+.cart-grid { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; }
+@media (max-width: 768px) { .cart-grid { grid-template-columns: 1fr; } }
+
+.cart-items { display: flex; flex-direction: column; gap: 1rem; }
+
+.cart-item {
+  background: white; border-radius: var(--radius);
+  padding: 1rem; display: flex; gap: 1rem; align-items: center;
+  box-shadow: var(--shadow); border: 2px solid transparent;
+  transition: border 0.2s;
+}
+.cart-item:hover { border-color: var(--pink-light); }
+
+.cart-item-img {
+  width: 70px; height: 70px; border-radius: 12px;
+  background: var(--pink-pale); display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; flex-shrink: 0; overflow: hidden;
+}
+.cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.cart-item-info { flex: 1; }
+.cart-item-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.2rem; }
+.cart-item-price { color: var(--pink); font-family: 'Fredoka One', cursive; }
+
+.qty-control {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;
+}
+.qty-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--pink-light); background: white;
+  color: var(--pink); font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.qty-btn:hover { background: var(--pink); color: white; border-color: var(--pink); }
+.qty-num { font-weight: 800; min-width: 24px; text-align: center; }
+
+.remove-btn {
+  background: none; border: none; cursor: pointer;
+  color: #ffb3b3; font-size: 1.3rem; transition: color 0.2s; padding: 0.3rem;
+}
+.remove-btn:hover { color: #e74c3c; }
+
+.cart-summary {
+  background: white; border-radius: var(--radius);
+  padding: 1.5rem; box-shadow: var(--shadow);
+  border: 2px solid var(--pink-light); height: fit-content;
+  position: sticky; top: 80px;
+}
+.cart-summary h3 { font-family: 'Fredoka One', cursive; color: var(--pink); font-size: 1.3rem; margin-bottom: 1.2rem; }
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 0.7rem; font-size: 0.95rem; }
+.summary-row.total { font-weight: 800; font-size: 1.1rem; border-top: 2px dashed var(--pink-light); padding-top: 0.7rem; margin-top: 0.5rem; color: var(--pink); }
+.summary-address { margin-top: 1rem; }
+.summary-address textarea {
+  width: 100%; padding: 0.75rem; border-radius: 12px;
+  border: 2px solid var(--pink-light); font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem; resize: vertical; min-height: 80px; outline: none;
+}
+.summary-address textarea:focus { border-color: var(--pink); }
+
+/* ── ORDERS PAGE ── */
+.section-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.8rem; color: var(--pink); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.order-card {
+  background: white; border-radius: var(--radius);
+  padding: 1.5rem; margin-bottom: 1rem;
+  box-shadow: var(--shadow); border: 2px solid transparent;
+  transition: border 0.2s;
+}
+.order-card:hover { border-color: var(--purple-light); }
+
+.order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+.order-id { font-weight: 800; color: var(--text); }
+.order-date { font-size: 0.85rem; color: var(--text-light); }
+.order-status {
+  padding: 0.3rem 0.9rem; border-radius: 50px; font-size: 0.8rem; font-weight: 800;
+}
+.status-PENDING { background: #fff3cd; color: #856404; }
+.status-CONFIRMED { background: #d1ecf1; color: #0c5460; }
+.status-SHIPPING { background: #d4edda; color: #155724; }
+.status-DELIVERED { background: #d0f5e8; color: #0a7a4b; }
+.status-CANCELLED { background: #f8d7da; color: #721c24; }
+
+.order-items-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.order-item-chip {
+  background: var(--pink-pale); color: var(--text); border-radius: 8px;
+  padding: 0.3rem 0.7rem; font-size: 0.82rem; font-weight: 700;
+}
+.order-total { font-family: 'Fredoka One', cursive; color: var(--pink); font-size: 1.1rem; }
+
+/* ── ADMIN PAGE ── */
+.admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab-btn {
+  padding: 0.6rem 1.4rem; border-radius: 50px;
+  border: 2px solid var(--purple-light); background: white;
+  font-family: 'Nunito', sans-serif; font-weight: 700; cursor: pointer;
+  color: var(--text-light); transition: all 0.2s;
+}
+.tab-btn.active, .tab-btn:hover { background: var(--purple); border-color: var(--purple); color: white; }
+
+.admin-table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; background: white; }
+th { background: var(--pink-pale); padding: 0.9rem 1rem; text-align: left; font-weight: 800; font-size: 0.85rem; color: var(--text); }
+td { padding: 0.85rem 1rem; border-top: 1px solid #f5e6ff; font-size: 0.9rem; }
+tr:hover td { background: var(--cream); }
+
+.btn-sm {
+  padding: 0.35rem 0.8rem; border-radius: 8px; border: none;
+  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.8rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-sm.edit { background: #e8f4fd; color: #2980b9; }
+.btn-sm.edit:hover { background: #2980b9; color: white; }
+.btn-sm.del { background: #fde8e8; color: #e74c3c; }
+.btn-sm.del:hover { background: #e74c3c; color: white; }
+
+.btn-add {
+  padding: 0.6rem 1.4rem; background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white; border: none; border-radius: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer;
+  margin-bottom: 1rem; transition: all 0.2s;
+}
+.btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(45,27,61,0.5);
+  z-index: 1000; display: none; align-items: center; justify-content: center;
+  padding: 1rem; backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius); padding: 2rem;
+  max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(45,27,61,0.3);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.modal-header h3 { font-family: 'Fredoka One', cursive; color: var(--pink); font-size: 1.4rem; }
+.modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); transition: color 0.2s; }
+.modal-close:hover { color: var(--pink); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+  background: var(--dark); color: white; padding: 1rem 1.5rem;
+  border-radius: 14px; font-weight: 700; font-size: 0.9rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; pointer-events: none; max-width: 300px;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+#toast.error { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+/* ── LOADING ── */
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.8);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+}
+.loading-overlay.show { display: flex; }
+.spinner {
+  width: 50px; height: 50px; border: 4px solid var(--pink-light);
+  border-top-color: var(--pink); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PROFILE ── */
+.profile-card {
+  max-width: 500px; background: white; border-radius: var(--radius);
+  padding: 2rem; box-shadow: var(--shadow); border: 2px solid var(--pink-light);
+}
+.profile-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 2rem; margin-bottom: 1rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .navbar { padding: 0 1rem; }
+  .page { padding: 1rem; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+<span class="nav-logo" onclick="navigate('shop')" style="cursor:pointer">🍭 Candycore Shop</span>  <div class="nav-links" id="navLinks">
+    <button class="nav-btn active" onclick="navigate('shop')" id="nav-shop">🛍️ Shop</button>
+    <button class="nav-btn" onclick="navigate('orders')" id="nav-orders" style="display:none">📦 Đơn hàng</button>
+    <button class="nav-btn" onclick="navigate('admin')" id="nav-admin" style="display:none">⚙️ Admin</button>
+    <button class="nav-btn" onclick="navigate('login')" id="nav-login">🔑 Đăng nhập</button>
+    <div class="nav-user" id="navUser" style="display:none">
+      <div class="nav-avatar" id="navAvatar">?</div>
+      <button class="nav-btn" onclick="navigate('profile')" id="nav-profile">Tài khoản</button>
+      <button class="nav-btn" onclick="logout()" style="color:#e74c3c">Đăng xuất</button>
+    </div>
+    <button class="nav-btn cart-btn" onclick="navigate('cart')">
+      🛒 <span id="cartCount" class="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ════════════ PAGE: SHOP ════════════ -->
+<div class="page active" id="page-shop">
+  <div class="hero">
+    <h1>🍭 Candycore Merch Store</h1>
+    <p>Sanrio & Kawaii merchandise chính hãng — siêu dễ thương 🌸</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCategory('all', this, event)">Tất cả</button>
+    <button class="filter-btn" onclick="filterCategory('plush', this, event)">🧸 Gấu bông</button>
+    <button class="filter-btn" onclick="filterCategory('accessories', this, event)">👜 Phụ kiện</button>
+    <button class="filter-btn" onclick="filterCategory('stationery', this, event)">✏️ Văn phòng phẩm</button>
+    <button class="filter-btn" onclick="filterCategory('apparel', this, event)">👕 Quần áo</button>
+    <button class="filter-btn" onclick="filterCategory('homeware', this, event)">🏠 Đồ gia dụng</button>
+<input class="search-box" type="text" placeholder="🔍 Tìm sản phẩm..." oninput="searchProducts(this.value, event)" id="searchInput" autocomplete="off">
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--text-light)">⏳ Đang tải sản phẩm...</div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: LOGIN ════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-wrapper">
+    <h2>🔑 Đăng nhập</h2>
+    <p class="auth-subtitle">Chào mừng trở lại Candycore Shop! 🌸</p>
+    <div class="alert" id="loginAlert"></div>
+    <div class="form-group">
+      <label class="form-label">Tên đăng nhập</label>
+      <input class="form-input" type="text" id="loginUsername" placeholder="username" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mật khẩu</label>
+      <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" onclick="doLogin()" id="loginBtn">Đăng nhập 🌸</button>
+    <div class="auth-switch">Chưa có tài khoản? <a onclick="navigate('register')">Đăng ký ngay</a></div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: REGISTER ════════════ -->
+<div class="page" id="page-register">
+  <div class="auth-wrapper">
+    <h2>✨ Đăng ký</h2>
+    <p class="auth-subtitle">Tạo tài khoản để mua hàng dễ dàng hơn! 💝</p>
+    <div class="alert" id="regAlert"></div>
+    <div class="form-group">
+      <label class="form-label">Tên đăng nhập *</label>
+      <input class="form-input" type="text" id="regUsername" placeholder="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Họ tên *</label>
+      <input class="form-input" type="text" id="regFullName" placeholder="Nguyễn Văn A">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email *</label>
+      <input class="form-input" type="email" id="regEmail" placeholder="example@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mật khẩu *</label>
+      <input class="form-input" type="password" id="regPassword" placeholder="Ít nhất 6 ký tự">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Số điện thoại</label>
+      <input class="form-input" type="tel" id="regPhone" placeholder="0901234567">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Địa chỉ</label>
+      <input class="form-input" type="text" id="regAddress" placeholder="Số nhà, đường, phường, quận...">
+    </div>
+    <button class="btn-primary" onclick="doRegister()" id="regBtn">Đăng ký 🌸</button>
+    <div class="auth-switch">Đã có tài khoản? <a onclick="navigate('login')">Đăng nhập</a></div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: CART ════════════ -->
+<div class="page" id="page-cart">
+  <h2 class="section-title">🛒 Giỏ hàng</h2>
+  <div id="cartContent"></div>
+</div>
+
+<!-- ════════════ PAGE: ORDERS ════════════ -->
+<div class="page" id="page-orders">
+  <h2 class="section-title">📦 Đơn hàng của tôi</h2>
+  <div id="ordersContent"></div>
+</div>
+
+<!-- ════════════ PAGE: PROFILE ════════════ -->
+<div class="page" id="page-profile">
+  <h2 class="section-title">👤 Tài khoản</h2>
+  <div class="profile-card">
+    <div class="profile-avatar" id="profileAvatar">?</div>
+    <div id="profileInfo"></div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: ADMIN ════════════ -->
+<div class="page" id="page-admin">
+  <h2 class="section-title">⚙️ Quản trị</h2>
+  <div class="admin-tabs">
+    <button class="tab-btn active" onclick="adminTab('products', this)">📦 Sản phẩm</button>
+    <button class="tab-btn" onclick="adminTab('orders-admin', this)">🛒 Đơn hàng</button>
+  </div>
+  <div id="adminContent"></div>
+</div>
+
+<!-- ════════════ MODAL: PRODUCT DETAIL ════════════ -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalProductName">Sản phẩm</h3>
+      <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+    </div>
+    <div id="modalProductBody"></div>
+  </div>
+</div>
+
+<!-- ════════════ MODAL: ADD/EDIT PRODUCT ════════════ -->
+<div class="modal-overlay" id="productFormModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="productFormTitle">Thêm sản phẩm</h3>
+      <button class="modal-close" onclick="closeModal('productFormModal')">✕</button>
+    </div>
+    <div class="alert" id="productFormAlert"></div>
+    <div class="form-group"><label class="form-label">Tên sản phẩm *</label><input class="form-input" id="pf-name"></div>
+    <div class="form-group"><label class="form-label">Giá (VNĐ) *</label><input class="form-input" type="number" id="pf-price"></div>
+    <div class="form-group"><label class="form-label">Giá gốc (để trống nếu không giảm)</label><input class="form-input" type="number" id="pf-original-price"></div>
+    <div class="form-group"><label class="form-label">Mô tả</label><input class="form-input" id="pf-desc"></div>
+    <div class="form-group"><label class="form-label">URL hình ảnh</label><input class="form-input" id="pf-image"></div>
+    <div class="form-group">
+      <label class="form-label">Danh mục</label>
+      <select class="form-input" id="pf-category">
+        <option value="plush">Gấu bông</option>
+        <option value="accessories">Phụ kiện</option>
+        <option value="stationery">Văn phòng phẩm</option>
+        <option value="apparel">Quần áo</option>
+        <option value="homeware">Đồ gia dụng</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Nhân vật</label><input class="form-input" id="pf-character" placeholder="Hello Kitty, Kuromi..."></div>
+    <div class="form-group"><label class="form-label">Tồn kho</label><input class="form-input" type="number" id="pf-stock" value="0"></div>
+    <input type="hidden" id="pf-id">
+    <button class="btn-primary" onclick="saveProduct()">Lưu sản phẩm 💾</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+const API = 'http://localhost:5002';
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let state = {
+  user: null,
+  accessToken: null,
+  cart: JSON.parse(localStorage.getItem('candy_cart') || '[]'),
+  products: [],
+  currentCategory: 'all',
+  currentSearch: ''
+};
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  const saved = localStorage.getItem('candy_token');
+  if (saved) {
+    state.accessToken = saved;
+    await loadCurrentUser();
+  }
+  updateCartBadge();
+  loadProducts();
+});
+
+// ══════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  const nb = document.getElementById('nav-' + page);
+  if (nb) nb.classList.add('active');
+  window.scrollTo(0, 0);
+  
+if (page === 'shop' && !state.products.length) loadProducts();
+  if (page === 'cart') renderCart();
+  if (page === 'orders') loadOrders();
+  if (page === 'profile') renderProfile();
+  if (page === 'admin') { adminTab('products', document.querySelector('.tab-btn')); }
+}
+
+// ══════════════════════════════════════════════
+//  API HELPER
+// ══════════════════════════════════════════════
+async function api(method, path, body, auth = true) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth && state.accessToken) headers['Authorization'] = 'Bearer ' + state.accessToken;
+  const res = await fetch(API + path, {
+    method, headers, credentials: 'include',
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const data = await res.json();
+  if (!res.ok) throw data;
+  return data;
+}
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+async function doLogin() {
+  const btn = document.getElementById('loginBtn');
+  const alert = document.getElementById('loginAlert');
+  alert.className = 'alert';
+  btn.disabled = true; btn.textContent = '⏳ Đang đăng nhập...';
+  try {
+    const res = await api('POST', '/api/auth/signin', {
+      username: document.getElementById('loginUsername').value,
+      password: document.getElementById('loginPassword').value
+    }, false);
+    state.accessToken = res.data.accessToken;
+    state.user = res.data.user;
+    localStorage.setItem('candy_token', state.accessToken);
+    updateNavForUser();
+    showToast('🌸 Đăng nhập thành công!', 'success');
+    navigate('shop');
+  } catch(e) {
+    alert.className = 'alert error';
+    alert.textContent = e.message || 'Đăng nhập thất bại.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Đăng nhập 🌸';
+  }
+}
+
+async function doRegister() {
+  const btn = document.getElementById('regBtn');
+  const alert = document.getElementById('regAlert');
+  alert.className = 'alert';
+  btn.disabled = true; btn.textContent = '⏳ Đang xử lý...';
+  try {
+    await api('POST', '/api/auth/signup', {
+      username: document.getElementById('regUsername').value,
+      fullName: document.getElementById('regFullName').value,
+      email: document.getElementById('regEmail').value,
+      password: document.getElementById('regPassword').value,
+      phoneNumber: document.getElementById('regPhone').value,
+      address: document.getElementById('regAddress').value
+    }, false);
+    alert.className = 'alert success';
+    alert.textContent = '✅ Đăng ký thành công! Đang chuyển đến trang đăng nhập...';
+    setTimeout(() => navigate('login'), 1500);
+  } catch(e) {
+    alert.className = 'alert error';
+    alert.textContent = e.message || 'Đăng ký thất bại.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Đăng ký 🌸';
+  }
+}
+
+async function logout() {
+  try { await api('POST', '/api/auth/signout'); } catch(e) {}
+  state.accessToken = null; state.user = null;
+  state.cart = []; 
+  localStorage.removeItem('candy_token');
+  localStorage.removeItem('candy_cart');
+  updateCartBadge(); 
+  updateNavForUser();
+  showToast('👋 Đã đăng xuất!');
+  navigate('shop');
+}
+
+async function loadCurrentUser() {
+  try {
+    const res = await api('GET', '/api/auth/me');
+    state.user = res.data;
+    updateNavForUser();
+  } catch(e) {
+    state.accessToken = null; localStorage.removeItem('candy_token');
+  }
+}
+
+function updateNavForUser() {
+  const loggedIn = !!state.user;
+  document.getElementById('nav-login').style.display = loggedIn ? 'none' : '';
+  document.getElementById('navUser').style.display = loggedIn ? 'flex' : 'none';
+  document.getElementById('nav-orders').style.display = loggedIn ? '' : 'none';
+  document.getElementById('nav-admin').style.display = (loggedIn && state.user?.role === 'ADMIN') ? '' : 'none';
+  if (loggedIn) {
+    document.getElementById('navAvatar').textContent = (state.user.fullName || state.user.username)[0].toUpperCase();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PRODUCTS
+// ══════════════════════════════════════════════
+const EMOJI_MAP = { plush:'🧸', accessories:'👜', stationery:'✏️', apparel:'👕', homeware:'🏠' };
+
+// Wrapper để handle product card click
+function handleProductCardClick(productId) {
+  event?.preventDefault();
+  event?.stopPropagation();
+  console.log('📦 Product card clicked:', productId);
+  showProductDetail(productId);
+  return false;
+}
+
+function handleAddToCart(productId) {
+  event?.preventDefault();
+  event?.stopPropagation();
+  console.log('🛒 Add to cart clicked:', productId);
+  addToCart(productId);
+  return false;
+}
+
+async function loadProducts() {
+  try {
+    console.log('🔄 Calling loadProducts with:', { category: state.currentCategory, search: state.currentSearch });
+    const params = new URLSearchParams({ limit: 50 });
+    if (state.currentCategory !== 'all') params.set('category', state.currentCategory);
+    if (state.currentSearch) params.set('search', state.currentSearch);
+    const res = await api('GET', '/api/products?' + params, null, false);
+    state.products = res.data.products;
+    renderProducts(state.products);
+  } catch(e) {
+    document.getElementById('productsGrid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-light)">⚠️ Không thể tải sản phẩm. Hãy chắc chắn backend đang chạy.</div>`;
+  }
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('productsGrid');
+  if (!products.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-light)">🔍 Không tìm thấy sản phẩm nào.</div>`;
+    return;
+  }
+  grid.innerHTML = products.map(p => {
+    const sale = p.originalPrice && p.originalPrice > p.price;
+    const pct = sale ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+    return `
+    <div class="product-card" onclick="handleProductCardClick(${p.productId})">
+      <div class="product-img">
+        ${p.imageUrl ? `<img src="${p.imageUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <span class="emoji-fallback" style="display:none">${EMOJI_MAP[p.category]||'🛍️'}</span>`
+          : `<span class="emoji-fallback">${EMOJI_MAP[p.category]||'🛍️'}</span>`}
+        ${sale ? `<div class="sale-badge">-${pct}%</div>` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.productName}</div>
+        ${p.character ? `<div class="product-character">🌸 ${p.character}</div>` : ''}
+        <div class="product-price">
+          <span class="price-current">${p.price.toLocaleString('vi-VN')}₫</span>
+          ${sale ? `<span class="price-original">${p.originalPrice.toLocaleString('vi-VN')}₫</span>` : ''}
+        </div>
+        <div class="stock-info">${p.stock > 0 ? `Còn ${p.stock} sản phẩm` : '⚠️ Hết hàng'}</div>
+        <button class="add-cart-btn" ${p.stock <= 0 ? 'disabled' : ''}
+          onclick="handleAddToCart(${p.productId})">
+          🛒 Thêm vào giỏ
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterCategory(cat, btn, evt) {
+  if (evt) { evt.preventDefault(); evt.stopPropagation(); }
+  state.currentCategory = cat;
+  state.currentSearch = ''; // Reset search khi filter
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  console.log('🎯 Filter triggered:', cat);
+  loadProducts();
+}
+
+let searchTimer;
+function searchProducts(val, evt) {
+  if (evt) { evt.stopPropagation(); }
+  state.currentSearch = val.trim();
+  state.currentCategory = 'all'; // Reset category khi search
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    console.log('🔍 Search triggered:', state.currentSearch);
+    loadProducts();
+  }, 400);
+}
+
+function showProductDetail(id) {
+  const p = state.products.find(x => x.productId === id);
+  if (!p) return;
+  document.getElementById('modalProductName').textContent = p.productName;
+  const sale = p.originalPrice && p.originalPrice > p.price;
+  document.getElementById('modalProductBody').innerHTML = `
+    <div style="background:var(--pink-pale);border-radius:16px;display:flex;align-items:center;justify-content:center;height:200px;font-size:6rem;margin-bottom:1.2rem;overflow:hidden">
+      ${p.imageUrl ? `<img src="${p.imageUrl}" style="height:100%;width:100%;object-fit:cover" onerror="this.outerHTML='<span>${EMOJI_MAP[p.category]||'🛍️'}</span>">` : EMOJI_MAP[p.category]||'🛍️'}
+    </div>
+    ${p.character ? `<div style="color:var(--text-light);margin-bottom:0.5rem">🌸 ${p.character}</div>` : ''}
+    ${p.description ? `<p style="color:var(--text);margin-bottom:1rem;line-height:1.6">${p.description}</p>` : ''}
+    <div class="product-price" style="margin-bottom:1rem">
+      <span class="price-current" style="font-size:1.4rem">${p.price.toLocaleString('vi-VN')}₫</span>
+      ${sale ? `<span class="price-original">${p.originalPrice.toLocaleString('vi-VN')}₫</span>` : ''}
+    </div>
+    <div style="margin-bottom:1.2rem;color:var(--text-light);font-size:0.9rem">${p.stock > 0 ? `✅ Còn ${p.stock} sản phẩm` : '❌ Hết hàng'}</div>
+    <button class="btn-primary" ${p.stock<=0?'disabled':''} onclick="handleAddToCartAndClose(${p.productId})">
+  🛒 Thêm vào giỏ hàng
+</button>
+  `;
+  document.getElementById('productModal').classList.add('open');
+}
+
+// Helper để thêm vào giỏ và đóng modal
+function handleAddToCartAndClose(productId) {
+  event?.preventDefault();
+  event?.stopPropagation();
+  console.log('🛒 Modal add to cart:', productId);
+  addToCart(productId);
+  closeModal('productModal');
+  return false;
+}
+
+// ══════════════════════════════════════════════
+//  CART
+// ══════════════════════════════════════════════
+function addToCart(productId) {
+  const p = state.products.find(x => x.productId === productId);
+  if (!p || p.stock <= 0) return;
+  const existing = state.cart.find(x => x.productId === productId);
+  if (existing) {
+    if (existing.quantity >= p.stock) { showToast('⚠️ Không đủ hàng!', 'error'); return; }
+    existing.quantity++;
+  } else {
+    state.cart.push({ productId, name: p.productName, price: p.price, imageUrl: p.imageUrl, category: p.category, quantity: 1 });
+  }
+  saveCart();
+  showToast('✅ Đã thêm vào giỏ!', 'success');
+}
+
+function saveCart() {
+  localStorage.setItem('candy_cart', JSON.stringify(state.cart));
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  const total = state.cart.reduce((s, x) => s + x.quantity, 0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+function renderCart() {
+  const el = document.getElementById('cartContent');
+  if (!state.cart.length) {
+    el.innerHTML = `<div class="cart-empty"><div class="empty-icon">🛒</div><h3>Giỏ hàng trống!</h3><p>Hãy chọn thêm sản phẩm nhé 🌸</p><br><button class="btn-primary" style="max-width:200px" onclick="navigate('shop')">Mua sắm ngay</button></div>`;
+    return;
+  }
+  const total = state.cart.reduce((s,x) => s + x.price * x.quantity, 0);
+  el.innerHTML = `
+    <div class="cart-grid">
+      <div class="cart-items">
+        ${state.cart.map((item, i) => `
+          <div class="cart-item">
+            <div class="cart-item-img">
+              ${item.imageUrl ? `<img src="${item.imageUrl}" onerror="this.outerHTML='<span style=font-size:2rem>${EMOJI_MAP[item.category]||'🛍️'}</span>'">` : `<span style="font-size:2rem">${EMOJI_MAP[item.category]||'🛍️'}</span>`}
+            </div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">${item.price.toLocaleString('vi-VN')}₫</div>
+              <div class="qty-control">
+                <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+                <span class="qty-num">${item.quantity}</span>
+                <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:800;color:var(--pink)">${(item.price*item.quantity).toLocaleString('vi-VN')}₫</div>
+              <button class="remove-btn" onclick="removeFromCart(${i})">🗑️</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="cart-summary">
+        <h3>📋 Tóm tắt đơn hàng</h3>
+        <div class="summary-row"><span>Số lượng sản phẩm</span><span>${state.cart.reduce((s,x)=>s+x.quantity,0)}</span></div>
+        <div class="summary-row"><span>Tạm tính</span><span>${total.toLocaleString('vi-VN')}₫</span></div>
+        <div class="summary-row"><span>Phí vận chuyển</span><span style="color:var(--mint)">Miễn phí 🎁</span></div>
+        <div class="summary-row total"><span>Tổng cộng</span><span>${total.toLocaleString('vi-VN')}₫</span></div>
+        <div class="summary-address">
+          <label class="form-label" style="margin-bottom:0.5rem">📍 Địa chỉ giao hàng *</label>
+          <textarea id="shippingAddress" placeholder="Nhập địa chỉ giao hàng đầy đủ...">${state.user?.address || ''}</textarea>
+        </div>
+        <div class="form-group" style="margin-top:0.8rem">
+          <label class="form-label">📝 Ghi chú (tùy chọn)</label>
+          <input class="form-input" id="orderNote" placeholder="Giao giờ hành chính, để trước cửa...">
+        </div>
+        <button class="btn-primary" onclick="placeOrder()" style="margin-top:0.5rem">
+          ✨ Đặt hàng ngay
+        </button>
+      </div>
+    </div>`;
+}
+
+function changeQty(i, delta) {
+  state.cart[i].quantity += delta;
+  if (state.cart[i].quantity <= 0) state.cart.splice(i, 1);
+  saveCart(); renderCart();
+}
+function removeFromCart(i) { state.cart.splice(i, 1); saveCart(); renderCart(); }
+
+async function placeOrder() {
+  if (!state.user) { showToast('🔑 Vui lòng đăng nhập để đặt hàng!', 'error'); navigate('login'); return; }
+  const addr = document.getElementById('shippingAddress')?.value?.trim();
+  if (!addr) { showToast('📍 Vui lòng nhập địa chỉ giao hàng!', 'error'); return; }
+  showLoading(true);
+  try {
+    const res = await api('POST', '/api/orders', {
+      items: state.cart.map(x => ({ productId: x.productId, quantity: x.quantity })),
+      shippingAddress: addr,
+      note: document.getElementById('orderNote')?.value || ''
+    });
+    state.cart = [];
+    saveCart();
+    showToast('🎉 Đặt hàng thành công! Mã đơn: #' + res.data.orderId, 'success');
+    navigate('orders');
+  } catch(e) {
+    showToast('❌ ' + (e.message || 'Đặt hàng thất bại'), 'error');
+  } finally { showLoading(false); }
+}
+
+// ══════════════════════════════════════════════
+//  ORDERS
+// ══════════════════════════════════════════════
+async function loadOrders() {
+  if (!state.user) { navigate('login'); return; }
+  const el = document.getElementById('ordersContent');
+  el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-light)">⏳ Đang tải...</div>';
+  try {
+    const res = await api('GET', '/api/orders/my');
+    const orders = res.data;
+    if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-light)">📦 Chưa có đơn hàng nào.<br><br><button class="btn-primary" style="max-width:200px;margin:auto" onclick="navigate(\'shop\')">Mua sắm ngay</button></div>'; return; }
+    const STATUS_LABEL = { PENDING:'⏳ Chờ xác nhận', CONFIRMED:'✅ Đã xác nhận', SHIPPING:'🚚 Đang giao', DELIVERED:'🎉 Đã giao', CANCELLED:'❌ Đã hủy' };
+    el.innerHTML = orders.map(o => `
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <div class="order-id">Đơn hàng #${o.orderId}</div>
+            <div class="order-date">${new Date(o.createdAt).toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+          </div>
+          <span class="order-status status-${o.status}">${STATUS_LABEL[o.status] || o.status}</span>
+        </div>
+        <div class="order-items-list">
+          ${(o.items||[]).map(it => `<span class="order-item-chip">${it.product?.productName || 'Sản phẩm'} x${it.quantity}</span>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:0.85rem;color:var(--text-light)">📍 ${o.shippingAddress}</div>
+          <div class="order-total">${o.totalAmount.toLocaleString('vi-VN')}₫</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div style="text-align:center;padding:2rem;color:#e74c3c">❌ Không thể tải đơn hàng.</div>'; }
+}
+
+// ══════════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════════
+function renderProfile() {
+  if (!state.user) { navigate('login'); return; }
+  const u = state.user;
+  document.getElementById('profileAvatar').textContent = (u.fullName||u.username)[0].toUpperCase();
+  document.getElementById('profileInfo').innerHTML = `
+    <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--text);margin-bottom:1rem">${u.fullName}</h3>
+    <p style="color:var(--text-light);margin-bottom:0.4rem">👤 @${u.username}</p>
+    <p style="color:var(--text-light);margin-bottom:0.4rem">📧 ${u.email}</p>
+    ${u.phoneNumber ? `<p style="color:var(--text-light);margin-bottom:0.4rem">📱 ${u.phoneNumber}</p>` : ''}
+    ${u.address ? `<p style="color:var(--text-light);margin-bottom:0.4rem">📍 ${u.address}</p>` : ''}
+    <div style="margin-top:1rem"><span style="background:var(--pink-pale);color:var(--pink);padding:0.3rem 0.8rem;border-radius:50px;font-weight:800;font-size:0.85rem">${u.role === 'ADMIN' ? '⚙️ Admin' : '🌸 Khách hàng'}</span></div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════════
+let adminCurrentTab = 'products';
+
+async function adminTab(tab, btn) {
+  adminCurrentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (tab === 'products') await renderAdminProducts();
+  else await renderAdminOrders();
+}
+
+async function renderAdminProducts() {
+  const el = document.getElementById('adminContent');
+  el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-light)">⏳ Đang tải...</div>';
+  try {
+    const res = await api('GET', '/api/products?limit=100', null, false);
+    const products = res.data.products;
+    el.innerHTML = `
+      <button class="btn-add" onclick="openProductForm()">+ Thêm sản phẩm mới</button>
+      <div class="admin-table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Tên</th><th>Giá</th><th>Tồn kho</th><th>Danh mục</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+          <tbody>
+            ${products.map(p => `<tr>
+              <td>#${p.productId}</td>
+              <td><strong>${p.productName}</strong><br><small style="color:var(--text-light)">${p.character||''}</small></td>
+              <td style="color:var(--pink);font-weight:800">${p.price.toLocaleString('vi-VN')}₫</td>
+              <td>${p.stock}</td>
+              <td>${p.category}</td>
+              <td><span style="padding:0.2rem 0.6rem;border-radius:50px;font-size:0.8rem;font-weight:800;background:${p.status==='ACTIVE'?'#d0f5e8':'#fde8e8'};color:${p.status==='ACTIVE'?'#0a7a4b':'#e74c3c'}">${p.status}</span></td>
+              <td style="display:flex;gap:0.4rem">
+                <button class="btn-sm edit" onclick="openProductForm(${JSON.stringify(p).replace(/"/g,'&quot;')})">✏️ Sửa</button>
+                <button class="btn-sm del" onclick="deleteProduct(${p.productId})">🗑️ Xóa</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } catch(e) { el.innerHTML = '<div style="color:#e74c3c;padding:1rem">❌ Lỗi tải dữ liệu.</div>'; }
+}
+
+async function renderAdminOrders() {
+  const el = document.getElementById('adminContent');
+  el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-light)">⏳ Đang tải...</div>';
+  try {
+    const res = await api('GET', '/api/orders');
+    const orders = Array.isArray(res.data) ? res.data : (res.data.orders || []);
+    const STATUS_OPTIONS = ['PENDING','CONFIRMED','SHIPPING','DELIVERED','CANCELLED'];
+    const STATUS_LABEL = { PENDING:'⏳ Chờ xác nhận', CONFIRMED:'✅ Đã xác nhận', SHIPPING:'🚚 Đang giao', DELIVERED:'🎉 Đã giao', CANCELLED:'❌ Đã hủy' };
+    if (!orders.length) {
+      el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-light)">📦 Chưa có đơn hàng nào.</div>';
+      return;
+    }
+    el.innerHTML = `
+      <div class="admin-table-wrap">
+        <table>
+          <thead><tr><th>Mã đơn</th><th>User ID</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Địa chỉ</th><th>Ngày đặt</th><th>Trạng thái</th></tr></thead>
+          <tbody>
+            ${orders.map(o => `<tr>
+              <td><strong>#${o.orderId}</strong></td>
+              <td>User #${o.userId}</td>
+              <td>${(o.items||[]).map(it => `<span class="order-item-chip">${it.product?.productName||'SP'} x${it.quantity}</span>`).join(' ')}</td>
+              <td style="color:var(--pink);font-weight:800">${o.totalAmount.toLocaleString('vi-VN')}₫</td>
+              <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.82rem">${o.shippingAddress}</td>
+              <td style="font-size:0.82rem">${new Date(o.createdAt).toLocaleDateString('vi-VN')}</td>
+              <td>
+                <select class="form-input" style="padding:0.3rem;border-radius:8px;font-size:0.82rem;width:auto" onchange="updateOrderStatus(${o.orderId}, this.value)">
+                  ${STATUS_OPTIONS.map(s => `<option value="${s}" ${o.status===s?'selected':''}>${STATUS_LABEL[s]}</option>`).join('')}
+                </select>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = '<div style="color:#e74c3c;padding:1rem">❌ Lỗi tải dữ liệu: ' + (e.message||'Không xác định') + '</div>';
+  }
+}
+
+function openProductForm(product = null) {
+  document.getElementById('productFormTitle').textContent = product ? '✏️ Sửa sản phẩm' : '➕ Thêm sản phẩm';
+  document.getElementById('pf-id').value = product?.productId || '';
+  document.getElementById('pf-name').value = product?.productName || '';
+  document.getElementById('pf-price').value = product?.price || '';
+  document.getElementById('pf-original-price').value = product?.originalPrice || '';
+  document.getElementById('pf-desc').value = product?.description || '';
+  document.getElementById('pf-image').value = product?.imageUrl || '';
+  document.getElementById('pf-category').value = product?.category || 'plush';
+  document.getElementById('pf-character').value = product?.character || '';
+  document.getElementById('pf-stock').value = product?.stock ?? 0;
+  document.getElementById('productFormAlert').className = 'alert';
+  document.getElementById('productFormModal').classList.add('open');
+}
+
+async function saveProduct() {
+  const id = document.getElementById('pf-id').value;
+  const data = {
+    productName: document.getElementById('pf-name').value,
+    price: parseInt(document.getElementById('pf-price').value),
+    originalPrice: document.getElementById('pf-original-price').value ? parseInt(document.getElementById('pf-original-price').value) : null,
+    description: document.getElementById('pf-desc').value,
+    imageUrl: document.getElementById('pf-image').value,
+    category: document.getElementById('pf-category').value,
+    character: document.getElementById('pf-character').value,
+    stock: parseInt(document.getElementById('pf-stock').value)
+  };
+  const alert = document.getElementById('productFormAlert');
+  try {
+    if (id) await api('PUT', '/api/products/' + id, data);
+    else await api('POST', '/api/products', data);
+    closeModal('productFormModal');
+    showToast('✅ Lưu sản phẩm thành công!', 'success');
+    loadProducts();
+    renderAdminProducts();
+  } catch(e) {
+    alert.className = 'alert error';
+    alert.textContent = e.message || 'Lỗi lưu sản phẩm.';
+  }
+}
+
+async function deleteProduct(id) {
+  if (!confirm('⚠️ Bạn chắc chắn muốn xóa sản phẩm này?')) return;
+  try {
+    await api('DELETE', '/api/products/' + id);
+    showToast('🗑️ Đã xóa sản phẩm.', 'success');
+    loadProducts(); renderAdminProducts();
+  } catch(e) { showToast('❌ ' + e.message, 'error'); }
+}
+
+async function updateOrderStatus(orderId, status) {
+  try {
+    await api('PUT', '/api/orders/' + orderId + '/status', { status });
+    showToast('✅ Cập nhật trạng thái thành công!', 'success');
+  } catch(e) { showToast('❌ ' + e.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════
+function closeModal(id) { 
+  document.getElementById(id).classList.remove('open');
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+}
+
+function showLoading(show) {
+  document.getElementById('loading').classList.toggle('show', show);
+}
+</script>
+</body>
+</html>
+

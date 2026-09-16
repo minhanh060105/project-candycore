@@ -26,19 +26,20 @@ const revealOnScroll = () => {
   });
 };
 window.addEventListener('scroll', revealOnScroll);
-revealOnScroll(); 
+revealOnScroll();
+
 const viewport = document.getElementById('museumViewport');
 const panImg = document.getElementById('pan-image');
-let isZoomed = false; 
+let isZoomed = false;
 
 if (viewport && panImg) {
   viewport.addEventListener('click', (e) => {
     isZoomed = !isZoomed;
-        panImg.style.transition = "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)";
+    panImg.style.transition = "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)";
 
     if (isZoomed) {
       const rect = viewport.getBoundingClientRect();
-      const zoomLevel = 2.5; 
+      const zoomLevel = 2.5;
       const x = (e.clientX - rect.left) * zoomLevel - rect.width / 2;
       const y = (e.clientY - rect.top) * zoomLevel - rect.height / 2;
 
@@ -53,21 +54,20 @@ if (viewport && panImg) {
   viewport.addEventListener('mousemove', (e) => {
     const rect = viewport.getBoundingClientRect();
     const zoomLevel = isZoomed ? 2.5 : 1;
-    
+
     const mouseXRatio = (e.clientX - rect.left) / rect.width;
     const mouseYRatio = (e.clientY - rect.top) / rect.height;
 
     if (isZoomed) {
-   
       panImg.style.transition = "transform 0.1s ease-out";
-      
+
       const moveX = mouseXRatio * (rect.width - rect.width * zoomLevel);
       const moveY = mouseYRatio * (rect.height - rect.height * zoomLevel);
 
       panImg.style.transform = `scale(${zoomLevel}) translate(${moveX / zoomLevel}px, ${moveY / zoomLevel}px)`;
     } else {
       panImg.style.transition = "transform 0.1s ease-out";
-      const panRange = 100; 
+      const panRange = 100;
       const moveX = (mouseXRatio - 0.5) * -panRange;
       const moveY = (mouseYRatio - 0.5) * -panRange;
       panImg.style.transform = `scale(1) translate(${moveX}px, ${moveY}px)`;
@@ -80,6 +80,7 @@ if (viewport && panImg) {
     panImg.style.transform = `scale(1) translate(0, 0)`;
   });
 }
+
 const modal = document.getElementById("gameModal");
 const closeBtn = document.getElementById("closeGame");
 
@@ -92,13 +93,12 @@ const openGamePopup = () => {
 };
 
 window.addEventListener('load', () => {
-  openGamePopup(); 
+  openGamePopup();
 });
 
 if (closeBtn) {
   closeBtn.onclick = function() {
       modal.style.display = "none";
-      // Mở lại nhạc web khi đóng game
       const webMusic = document.getElementById("webMusic");
       if (webMusic) webMusic.play();
   };
