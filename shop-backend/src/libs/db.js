@@ -10,6 +10,9 @@ dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
 export { Sequelize };
 
+const isSslNeeded = process.env.DB_CONNECTION_STRING?.includes('ssl-mode=REQUIRED') || 
+                    process.env.DB_CONNECTION_STRING?.includes('aivencloud.com');
+
 export const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING, {
     dialect: 'mysql',
     logging: false,
@@ -19,7 +22,8 @@ export const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING, {
         connectTimeout: 60000,
         dateStrings: true,
         typeCast: true,
-        timezone: '+07:00'
+        timezone: '+07:00',
+        ...(isSslNeeded ? { ssl: { rejectUnauthorized: false } } : {})
     },
     define: {
         freezeTableName: true,
